@@ -1,0 +1,29 @@
+{
+  "name": "tudu",
+  "version": "1.0.0",
+  "description": "TBA",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakobsym/Tudu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jakobsym/Tudu/issues"
+  },
+  "homepage": "https://github.com/jakobsym/Tudu#readme",
+  "devDependencies": {
+    "jsdom": "22.0.0",
+    "jsdom-global": "3.0.2",
+    "tape": "^5.6.3"
+  }
+}
