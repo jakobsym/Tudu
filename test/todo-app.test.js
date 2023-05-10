@@ -62,7 +62,7 @@ test("`TOGGLE` (undo) item from done=true to done=false", function(t){
     t.equal(model_second.todos.length, 2, "size of `model_second` = 2");   // Ensure "ADD" works
 
     // Turn orignal item from done=true >> done=false
-    const model_undo = app.update(model, "TOGGLE", item.id);
+    const model_undo = app.update(model_second, "TOGGLE", item.id);
     const undo_expected = {id: 1, title: "toggle a todo list item", done: false};
     t.deepEqual(model_undo.todos[0], undo_expected, "Toggled (undo) done=true >> done=false");
     t.end();
