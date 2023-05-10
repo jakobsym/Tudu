@@ -41,10 +41,31 @@ test("`ADD` new item to model.todos Array using `update`", function(t){
 test("`TOGGLE` item from done=false to done=true", function(t){
     const model = JSON.parse(JSON.stringify(app.model));    // initial state
     const model_w_todo = app.update(model, "ADD", "toggle a todo list item");   // Adds data to model for testing
+
     const item = model_w_todo.todos[0];                     // grab first element of model.todos array
     const model_todo_done = app.update(model_w_todo, "TOGGLE", item.id);
     const expected = {id: 1, title: "toggle a todo list item", done: true};
 
     t.deepEqual(model_todo_done.todos[0], expected, "`model_todo_done` is equal to `expected`.");
+    t.end();
+});
+
+// Test update() changing finished task back to unfinished
+test("`TOGGLE` (undo) item from done=true to done=false", function(t){
+    const model = JSON.parse(JSON.stringify(app.model));                         // initial state
+    const model_w_todo = app.update(model, "ADD", "toggle a todo list item");   // Adds data to model for testing
+    const item = model_w_todo.todos[0];                                         // grab first element of model.todos array
+    const model_todo_done = app.update(model_w_todo, "TOGGLE", item.id);        // get current state of model_w_todo
+    const expected = {id: 1, title: "toggle a todo list item", done: true};
+    t.deepEqual(model_todo_done.todos[0], expected, "Toggled done=false >> done=true");
+
+    // Adding another task before 'undo' on first task added
+    const model_second = app.update(model_todo_done, "ADD", "another todo list item");
+    t.equal(model_second.todos.length, 2, "size of `model_second` = 2");   // Ensure "ADD" works
+
+    // Turn orignal item from done=true >> done=false
+    const model_undo = app.update(model, "TOGGLE", item.id);
+    const undo_expected = {id: 1, title: "toggle a todo list item", done: false};
+    t.deepEqual(model_undo.todos[0], undo_expected, "Toggled (undo) done=true >> done=false");
     t.end();
 });
