@@ -15,10 +15,23 @@ test('todo `model` (Object) has desired keys', function(t){
     t.end();    // finish test
 });
 
-// Test update() method
+// Test update() (default case)
 test("todo `update` default case, should return model unmodified", function(t){
     const model = JSON.parse(JSON.stringify(app.model));
     const unmodified_model = app.update(model, "UNKNOWN_ACTION");
     t.deepEqual(model, unmodified_model, " `model` and `unmodified_model` are equal.");
+    t.end();
+});
+
+
+// Test update() (add item to 'empty' list)
+test("`ADD` new item to model.todos Array using `update`", function(t){
+    const model = JSON.parse(JSON.stringify(app.model));
+    t.equal(model.todos.length, 0,  " `model` size equals 0. Nothing has been added yet.");
+    const updated_model = app.update(model, "ADD", "Add todo list item");
+    const expected = {id: 1, title: "Add todo list item", done: false};
+
+    t.equal(updated_model.todos.length, 1, " `updated_model` size equals 1.");
+    t.deepEqual(updated_model.todos[0], expected, "contents of `updated_model` equals contents of `expected`.");
     t.end();
 });
