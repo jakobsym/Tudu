@@ -35,3 +35,16 @@ test("`ADD` new item to model.todos Array using `update`", function(t){
     t.deepEqual(updated_model.todos[0], expected, "contents of `updated_model` equals contents of `expected`.");
     t.end();
 });
+
+
+// Test update() marking a task as complete (done: true)
+test("`TOGGLE` item from done=false to done=true", function(t){
+    const model = JSON.parse(JSON.stringify(app.model));    // initial state
+    const model_w_todo = app.update(model, "ADD", "toggle a todo list item");   // Adds data to model for testing
+    const item = model_w_todo.todos[0];                     // grab first element of model.todos array
+    const model_todo_done = app.update(model_w_todo, "TOGGLE", item.id);
+    const expected = {id: 1, title: "toggle a todo list item", done: true};
+
+    t.deepEqual(model_todo_done.todos[0], expected, "`model_todo_done` is equal to `expected`.");
+    t.end();
+});
