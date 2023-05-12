@@ -23,6 +23,7 @@ test("todo `update` default case, should return model unmodified", function(t){
     t.end();
 });
 
+
 // Test update() (add item to 'empty' list)
 test("`ADD` new item to model.todos Array using `update`", function(t){
     const model = JSON.parse(JSON.stringify(app.model));
@@ -34,6 +35,7 @@ test("`ADD` new item to model.todos Array using `update`", function(t){
     t.deepEqual(updated_model.todos[0], expected, "contents of `updated_model` equals contents of `expected`.");
     t.end();
 });
+
 
 // Test update() marking a task as complete (done: true)
 test("`TOGGLE` item from done=false to done=true", function(t){
