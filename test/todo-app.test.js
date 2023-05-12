@@ -5,6 +5,7 @@ const html = fs.readFileSync(path.resolve(__dirname, '../index.html'));
 require('jsdom-global')(html);  // https://github.com/rstacruz/jsdom-global
 const app = require('../lib/todo-app.js');  // functions to test
 const id = 'test-app';                      // 'test-app' as root element
+const elmish = require('../lib/elmish.js'); // import "elmish" core functions
 
 
 // Test Model object structure
@@ -79,14 +80,14 @@ test.only('render_item HTML for single Todo Item', function(t){
         hash: '#/'  // Route to display
     };
     // Render single todo list item
-    document.getElementById(id).appendChild(app.render_item(model.todos[0]));
+    document.getElementById(id).appendChild(app.render_item(model.todos[0]))
 
     const done = document.querySelectorAll('.completed')[0].textContent;    // Get [0] todo list item within 'completed'
     t.equal(done, 'Learn Elm Architecture', 'Done: Learn "TEA"');           // If `done` == "Learn Elm Architecuture" 
 
     const checked = document.querySelectorAll('input')[0].checked;
     t.equal(checked, true, 'Done: ' + model.todos[0].title + " is done=true"); // if `checked` == true
-    
+
     elmish.empty(document.getElementById(id));                              // clear DOM, prepare for next test
     t.end();
 });
