@@ -69,3 +69,24 @@ test("`TOGGLE` (undo) item from done=true to done=false", function(t){
     t.deepEqual(model_undo.todos[0], undo_expected, "Toggled (undo) done=true >> done=false");
     t.end();
 });
+
+// Render Single Todo List item
+test.only('render_item HTML for single Todo Item', function(t){
+    const model = {
+        todos: [
+            {id: 1, title: "Learn Elm Architecture", done:true}
+        ],
+        hash: '#/'  // Route to display
+    };
+    // Render single todo list item
+    document.getElementById(id).appendChild(app.render_item(model.todos[0]));
+
+    const done = document.querySelectorAll('.completed')[0].textContent;    // Get [0] todo list item within 'completed'
+    t.equal(done, 'Learn Elm Architecture', 'Done: Learn "TEA"');           // If `done` == "Learn Elm Architecuture" 
+
+    const checked = document.querySelectorAll('input')[0].checked;
+    t.equal(checked, true, 'Done: ' + model.todos[0].title + " is done=true"); // if `checked` == true
+    
+    elmish.empty(document.getElementById(id));                              // clear DOM, prepare for next test
+    t.end();
+});
