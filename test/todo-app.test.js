@@ -72,7 +72,8 @@ test("`TOGGLE` (undo) item from done=true to done=false", function(t){
 });
 
 // Render Single Todo List item
-test.only('render_item HTML for single Todo Item', function(t){
+// test.only() is a way to test only specified tests
+test('render_item HTML for single Todo Item', function(t){
     const model = {
         todos: [
             {id: 1, title: "Learn Elm Architecture", done:true}
@@ -88,6 +89,35 @@ test.only('render_item HTML for single Todo Item', function(t){
     const checked = document.querySelectorAll('input')[0].checked;
     t.equal(checked, true, 'Done: ' + model.todos[0].title + " is done=true"); // if `checked` == true
 
+    elmish.empty(document.getElementById(id));                              // clear DOM, prepare for next test
+    t.end();
+});
+
+// `render_main` test
+test('render "main" view using (elmish) HTML DOM functions', function(t){
+    const model = {
+        todos: [
+            { id: 1, title: "Learn Elm Architecture", done: true },
+            { id: 2, title: "Build Todo List App",    done: false },
+            { id: 3, title: "Win the Internet!",      done: false }
+        ],
+        hash: '#/'  // Route to display
+    };
+
+    // render "main" view and append it to the DOM inside the `test-app` node
+    document.getElementById(id).appendChild(app.render_main(model));
+    // test title text in model.todos was rendered to <label> node
+    document.querySelectorAll('.view').forEach(function(item, index){
+        t.equal(item.textContent, model.todos[index].title,
+        "index #" + index + " <label> text: " + item.textContent);
+    })
+
+    const inputs = document.querySelectorAll('input');  // todo items are 1,2,3
+    [true, false, false].forEach(function(state, index){
+        t.equal(inputs[index + 1].checked, state, 
+            "Todo #" + index + " is done=" + state);
+    })
+    
     elmish.empty(document.getElementById(id));                              // clear DOM, prepare for next test
     t.end();
 });
