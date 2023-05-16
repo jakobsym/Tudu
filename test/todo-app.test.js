@@ -114,6 +114,8 @@ test('render "main" view using (elmish) HTML DOM functions', function(t){
 
     const inputs = document.querySelectorAll('input');  // todo items are 1,2,3
     [true, false, false].forEach(function(state, index){
+        //console.log("`index`= " + index + 1);
+        console.log(inputs[index + 1]);
         t.equal(inputs[index + 1].checked, state, 
             "Todo #" + index + " is done=" + state);
     })

@@ -49,6 +49,7 @@
     "delayed-stream": "^1.0.0",
     "domexception": "^4.0.0",
     "dotignore": "^0.1.2",
+    "elmish": "^0.0.1",
     "entities": "^4.5.0",
     "es-abstract": "^1.21.2",
     "es-get-iterator": "^1.1.3",
