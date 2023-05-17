@@ -120,6 +120,48 @@ test('render "main" view using (elmish) HTML DOM functions', function(t){
             "Todo #" + index + " is done=" + state);
     })
     
-    elmish.empty(document.getElementById(id));                              // clear DOM, prepare for next test
+    elmish.empty(document.getElementById(id));       // clear DOM, prepare for next test
+    t.end();
+});
+
+// 'render_footer' function test
+test('render_footer view using (elmish) HTML DOM functions', function(t){
+    const model = {
+        todos: [
+            { id: 1, title: "Learn Elm Architecture", done: true },
+            { id: 2, title: "Build Todo List App",    done: false },
+            { id: 3, title: "Win the Internet!",      done: false }
+        ],
+        hash: '#/'  // Route to display
+    };
+
+    // render footer view and append it to the DOM
+    document.getElementById(id).appendChild(app.render_footer(model));
+
+    // count should display 2 items left
+    const items_left = document.getElementById('count').innerHTML;
+    t.equal(items_left, "<strong>2</strong> items left", "Items left = " + items_left + 
+    " equals 2");
+
+    // count number of footer <li> items: (shoudl be 3)
+    t.equal(document.querySelector('li').length, 3, "3 <li> within <footer>");
+
+    // check footer link text and href
+    const link_text = ['All', 'Active', 'Completed'];
+    const href = ['#/', '#/active', '#/completed'];
+
+    document.querySelectorAll('a').forEach(function(a, index){
+        t.equal(a.textContent, link_text[index], "<footer> link #" + index
+        + " is: " + a.textContent + "===" + link_text[index]);
+
+        t.equal(a.href.replace('about:blank', ''), href[index], "<footer> link #" +
+        index + " href is: " + href[index]);
+    });
+
+    // check if "clear" button is in footer
+    const clear_button = document.querySelectorAll('.clear-completed')[0].textContent;
+    t.equal(clear_button, 'Clear completed', '<button> in <footer> "Clear completed"');
+
+    elmish.empty(document.getElementById(id));       // clear DOM, prepare for next test
     t.end();
 });
