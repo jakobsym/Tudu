@@ -143,8 +143,8 @@ test('render_footer view using (elmish) HTML DOM functions', function(t){
     t.equal(items_left, "<strong>2</strong> items left", "Items left = " + items_left + 
     " equals 2");
 
-    // count number of footer <li> items: (shoudl be 3)
-    t.equal(document.querySelector('li').length, 3, "3 <li> within <footer>");
+    // count number of footer <li> items: (should be 3)
+    t.equal(document.querySelectorAll('li').length, 3, "3 <li> within <footer>");
 
     // check footer link text and href
     const link_text = ['All', 'Active', 'Completed'];
