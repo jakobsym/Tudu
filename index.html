@@ -8,6 +8,7 @@
   <link rel="shortcut icon"
   href="lib/favicon.ico" type="image/x-icon">
 </head>
+
 <body>
   <div id="app"></div>
   <!-- CSS Styles are 100% optional. but they make it look *much* nicer -->
@@ -18,14 +19,14 @@
   <script>
     var model = {
       todos: [
-        // { id: 0, title: "Make something people want.", done: false },
-        // { id: 1, title: "Bootstrap for as long as you can", done: false },
-        // { id: 2, title: "Let's solve our own problem", done: false }
+         { id: 0, title: "Make something people want.", done: false },
+         { id: 1, title: "Bootstrap for as long as you can", done: false },
+         { id: 2, title: "Let's solve our own problem", done: false }
       ],
       hash: '#/', // the "route" to display
       // editing: 2 // edit the 3rd todo list item (which has id == 2)
     };
-    //mount(model, update, view, 'app', subscriptions);
+    mount(model, update, view, 'app');
   </script>
 
   <!-- Below this point is all related to the Tests for the App -->
