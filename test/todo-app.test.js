@@ -178,11 +178,32 @@ test('render_footer 1 item left (pluaruisation test)', function(t){
     // render footer view and append it to the DOM
     document.getElementById(id).appendChild(app.render_footer(model));
 
-    // should display "1 item left"
+    // should display "1 items left"
     const items_left = document.getElementById('count').innerHTML;
     t.equal(items_left, "<strong>1</strong> items left", "Items left = " + items_left + 
     " equals 1");
 
+
+    elmish.empty(document.getElementById(id));
+    t.end();
+});
+
+test('`view` function using HTML DOM functions', function(t){
+    
+    // render view function and append to DOM
+    document.getElementById(id).appendChild(app.view(app.model));
+    
+    // check <h1> element
+    t.equal(document.querySelectorAll('h1')[0].textContent, "todos", "<h1>todos</h1>");
+
+    // check placeholder of <input> element
+    const placeholder = document.getElementById('new-todo').getAttribute("placeholder");
+    t.equal(placeholder, "What needs to be done?", "placeholder set on <input>");
+
+    // should display "0 items left"
+    const items_left = document.getElementById('count').innerHTML;
+    t.equal(items_left, "<strong>0</strong> items left", "Items left = " + items_left + 
+    " equals 0");
 
     elmish.empty(document.getElementById(id));
     t.end();
