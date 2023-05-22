@@ -165,3 +165,25 @@ test('render_footer view using (elmish) HTML DOM functions', function(t){
     elmish.empty(document.getElementById(id));       // clear DOM, prepare for next test
     t.end();
 });
+
+// render_footer pluaruisation test
+test('render_footer 1 item left (pluaruisation test)', function(t){
+    const model = {
+        todos:[
+            {id: 1, title: "Learn Elm Architecture", done: false}
+        ],
+        hash: "#/"
+    };
+
+    // render footer view and append it to the DOM
+    document.getElementById(id).appendChild(app.render_footer(model));
+
+    // should display "1 item left"
+    const items_left = document.getElementById('count').innerHTML;
+    t.equal(items_left, "<strong>1</strong> items left", "Items left = " + items_left + 
+    " equals 1");
+
+
+    elmish.empty(document.getElementById(id));
+    t.end();
+});
