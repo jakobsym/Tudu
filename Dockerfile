@@ -1,8 +1,8 @@
-# This where all the code/dependencies will go
+# Use the official Node.js image as the base image
 FROM node:latest
 
 # Set the working directory
-WORKDIR /lib
+WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -13,8 +13,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Expose desired port(s)
+# Expose the desired port (adjust if needed)
 EXPOSE 3000
 
-# Command to run the application
-CMD npm start
+# Set the environment variable for production
+ENV NODE_ENV=production
+
+# Start the application
+CMD ["npm", "start"]
