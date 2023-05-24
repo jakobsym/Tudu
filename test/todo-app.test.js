@@ -210,7 +210,7 @@ test('`view` function using HTML DOM functions', function(t){
 });
 
 // No todos, hide footer and main
-test.only("1. No Todos, hide #footer and #main", function(t){
+test("1. No Todos, hide #footer and #main", function(t){
     const model = {
         todos: [],
         hash: '#/'  // Route to display
