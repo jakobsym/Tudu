@@ -194,7 +194,7 @@ test('`view` function using HTML DOM functions', function(t){
     document.getElementById(id).appendChild(app.view(app.model));
     
     // check <h1> element
-    t.equal(document.querySelectorAll('h1')[0].textContent, "todos", "<h1>todos</h1>");
+    t.equal(document.querySelectorAll('h1')[0].textContent, "Tudus", "<h1>Tudus</h1>");
 
     // check placeholder of <input> element
     const placeholder = document.getElementById('new-todo').getAttribute("placeholder");
@@ -206,5 +206,94 @@ test('`view` function using HTML DOM functions', function(t){
     " equals 0");
 
     elmish.empty(document.getElementById(id));
+    t.end();
+});
+
+// No todos, hide footer and main
+test.only("1. No Todos, hide #footer and #main", function(t){
+    const model = {
+        todos: [],
+        hash: '#/'  // Route to display
+    };
+
+    document.getElementById(id).appendChild(app.view(model));   // Pass no Todos
+
+    // Create #main 
+    const main_display = window.getComputedStyle(document.getElementById('main'));
+    t.equal('none', main_display._values.display, "No todos, hide #main");
+
+    // Create #footer
+    const footer_display = window.getComputedStyle(document.getElementById('footer'));
+    t.equal('none', footer_display._values.display, "No todos, hide #footer");
+
+    elmish.empty(document.getElementById(id));
+    t.end();
+});
+
+// Adding new item to todo list (checking localStorage so any data user enters persists on their browser)
+
+/* if global.localStorage exists = global.localStorage
+else create a mimic implementation of localStorage
+*/
+global.localStorage = global.localStorage ? global.localStorage : {
+    getItem: function(key) {
+     const value = this[key];
+     return typeof value === 'undefined' ? null : value;
+   },
+   setItem: function (key, value) {
+     this[key] = value;
+   },
+   removeItem: function (key) {
+     delete this[key]
+   }
+  }
+  localStorage.removeItem('elmish_store');
+
+test.only("2. New Todo, should allow user to add todo items", function(t){
+
+    elmish.empty(document.getElementById(id));
+
+    const model = {
+        todos: [],
+        hash: '#/'  // Route to display
+    };
+
+    // Render view and append to the DOM
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+
+    const new_todo = document.getElementById('new-todo');
+    const todo_text = 'Make Everything Awesome!     ';   // white space intentional
+    
+    // assign a todo item
+    new_todo.value = todo_text;
+
+    // trigger `enter` keyboard key to ADD new todo
+    new_todo.dispatchEvent(new KeyboardEvent('keyup', {'key': 'Enter'}));
+    const items = document.querySelectorAll('.view');
+    t.equal(items.length, 1, "items length should = 1, as 1 item added");
+
+    // Check if new todo was added to DOM
+    const actual = document.getElementById('1').textContent;
+    t.equal(todo_text.trim(), actual, "should trim text input");
+
+    // subscription keyCode trigger test (!should fire signal)
+    const clone = document.getElementById(id).cloneNode(true);  // create clone of DOM
+    new_todo.dispatchEvent(new KeyboardEvent('keyup', {'key': '*'}));
+    t.deepEqual(document.getElementById(id), clone, "#" + id + " no change");
+
+    // check <input id="new-todo"> reset after new item was added
+    t.equal(new_todo.value, '', "Should clear text input field when input added.");
+
+    // check for #footer and #main to be 'block'// Create #main 
+    const main_display = window.getComputedStyle(document.getElementById('main'));
+    t.equal('block', main_display._values.display, "1 todos added, show #main");
+
+    // Create #footer
+    const footer_display = window.getComputedStyle(document.getElementById('footer'));
+    t.equal('block', footer_display._values.display, "1 todos addded, show #footer");
+
+    // clear DOM and clear 'localStorage' for next test
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_store');
     t.end();
 });
