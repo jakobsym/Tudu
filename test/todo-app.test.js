@@ -19,7 +19,7 @@ test('todo `model` (Object) has desired keys', function(t){
 // Test update() (default case)
 test("todo `update` default case, should return model unmodified", function(t){
     const model = JSON.parse(JSON.stringify(app.model));
-    const unmodified_model = app.update(model, "UNKNOWN_ACTION");
+    const unmodified_model = app.update("UNKNOWN_ACTION", model );
     t.deepEqual(model, unmodified_model, " `model` and `unmodified_model` are equal.");
     t.end();
 });
@@ -29,7 +29,7 @@ test("todo `update` default case, should return model unmodified", function(t){
 test("`ADD` new item to model.todos Array using `update`", function(t){
     const model = JSON.parse(JSON.stringify(app.model));
     t.equal(model.todos.length, 0,  " `model` size equals 0. Nothing has been added yet.");
-    const updated_model = app.update(model, "ADD", "Add todo list item");
+    const updated_model = app.update('ADD',model , "Add todo list item");
     const expected = {id: 1, title: "Add todo list item", done: false};
 
     t.equal(updated_model.todos.length, 1, " `updated_model` size equals 1.");
@@ -41,10 +41,10 @@ test("`ADD` new item to model.todos Array using `update`", function(t){
 // Test update() marking a task as complete (done: true)
 test("`TOGGLE` item from done=false to done=true", function(t){
     const model = JSON.parse(JSON.stringify(app.model));    // initial state
-    const model_w_todo = app.update(model, "ADD", "toggle a todo list item");   // Adds data to model for testing
+    const model_w_todo = app.update('ADD', model, "toggle a todo list item");   // Adds data to model for testing
 
     const item = model_w_todo.todos[0];                     // grab first element of model.todos array
-    const model_todo_done = app.update(model_w_todo, "TOGGLE", item.id);
+    const model_todo_done = app.update('TOGGLE', model_w_todo, item.id);
     const expected = {id: 1, title: "toggle a todo list item", done: true};
 
     t.deepEqual(model_todo_done.todos[0], expected, "`model_todo_done` is equal to `expected`.");
@@ -54,18 +54,18 @@ test("`TOGGLE` item from done=false to done=true", function(t){
 // Test update() changing finished task back to unfinished
 test("`TOGGLE` (undo) item from done=true to done=false", function(t){
     const model = JSON.parse(JSON.stringify(app.model));                         // initial state
-    const model_w_todo = app.update(model, "ADD", "toggle a todo list item");   // Adds data to model for testing
+    const model_w_todo = app.update('ADD', model, "toggle a todo list item");   // Adds data to model for testing
     const item = model_w_todo.todos[0];                                         // grab first element of model.todos array
-    const model_todo_done = app.update(model_w_todo, "TOGGLE", item.id);        // get current state of model_w_todo
+    const model_todo_done = app.update('TOGGLE', model_w_todo, item.id);        // get current state of model_w_todo
     const expected = {id: 1, title: "toggle a todo list item", done: true};
     t.deepEqual(model_todo_done.todos[0], expected, "Toggled done=false >> done=true");
 
     // Adding another task before 'undo' on first task added
-    const model_second = app.update(model_todo_done, "ADD", "another todo list item");
+    const model_second = app.update('ADD', model_todo_done, "another todo list item");
     t.equal(model_second.todos.length, 2, "size of `model_second` = 2");   // Ensure "ADD" works
 
     // Turn orignal item from done=true >> done=false
-    const model_undo = app.update(model_second, "TOGGLE", item.id);
+    const model_undo = app.update('TOGGLE', model_second, item.id);
     const undo_expected = {id: 1, title: "toggle a todo list item", done: false};
     t.deepEqual(model_undo.todos[0], undo_expected, "Toggled (undo) done=true >> done=false");
     t.end();
@@ -160,7 +160,7 @@ test('render_footer view using (elmish) HTML DOM functions', function(t){
 
     // check if "clear" button is in footer
     const clear_button = document.querySelectorAll('.clear-completed')[0].textContent;
-    t.equal(clear_button, 'Clear completed', '<button> in <footer> "Clear completed"');
+    t.equal(clear_button, 'Clear completed [1]', '<button> in <footer> "Clear completed"');
 
     elmish.empty(document.getElementById(id));       // clear DOM, prepare for next test
     t.end();
@@ -180,7 +180,7 @@ test('render_footer 1 item left (pluaruisation test)', function(t){
 
     // should display "1 items left"
     const items_left = document.getElementById('count').innerHTML;
-    t.equal(items_left, "<strong>1</strong> items left", "Items left = " + items_left + 
+    t.equal(items_left, "<strong>1</strong> item left", "Items left = " + items_left + 
     " equals 1");
 
 
@@ -246,30 +246,24 @@ global.localStorage = global.localStorage ? global.localStorage : {
    removeItem: function (key) {
      delete this[key]
    }
-  }
-  localStorage.removeItem('elmish_store');
+}
+localStorage.removeItem('todos-elmish_store');
 
-test.only("2. New Todo, should allow user to add todo items", function(t){
-
+test("2. New Todo, should allow user to add todo items", function(t){
     elmish.empty(document.getElementById(id));
-
-    const model = {
-        todos: [],
-        hash: '#/'  // Route to display
-    };
-
     // Render view and append to the DOM
-    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    elmish.mount({todos: []}, app.update, app.view, id, app.subscriptions);
 
     const new_todo = document.getElementById('new-todo');
     const todo_text = 'Make Everything Awesome!     ';   // white space intentional
-    
     // assign a todo item
     new_todo.value = todo_text;
 
     // trigger `enter` keyboard key to ADD new todo
-    new_todo.dispatchEvent(new KeyboardEvent('keyup', {'key': 'Enter'}));
+    //console.log("new_todo.value= ", new_todo.value);
+    document.dispatchEvent(new KeyboardEvent('keyup', {'keyCode': 13}));
     const items = document.querySelectorAll('.view');
+    //console.log(items.length);  // returns 0
     t.equal(items.length, 1, "items length should = 1, as 1 item added");
 
     // Check if new todo was added to DOM
@@ -278,7 +272,7 @@ test.only("2. New Todo, should allow user to add todo items", function(t){
 
     // subscription keyCode trigger test (!should fire signal)
     const clone = document.getElementById(id).cloneNode(true);  // create clone of DOM
-    new_todo.dispatchEvent(new KeyboardEvent('keyup', {'key': '*'}));
+    document.dispatchEvent(new KeyboardEvent('keyup', {'keyCode': 42}));
     t.deepEqual(document.getElementById(id), clone, "#" + id + " no change");
 
     // check <input id="new-todo"> reset after new item was added
@@ -294,6 +288,6 @@ test.only("2. New Todo, should allow user to add todo items", function(t){
 
     // clear DOM and clear 'localStorage' for next test
     elmish.empty(document.getElementById(id));
-    localStorage.removeItem('elmish_store');
+    localStorage.removeItem('todos-elmish_' + id);
     t.end();
 });
