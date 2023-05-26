@@ -261,7 +261,7 @@ test("2. New Todo, should allow user to add todo items", function(t){
 
     // trigger `enter` keyboard key to ADD new todo
     //console.log("new_todo.value= ", new_todo.value);
-    document.dispatchEvent(new KeyboardEvent('keyup', {'keyCode': 13}));
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key': 'Enter'}));
     const items = document.querySelectorAll('.view');
     //console.log(items.length);  // returns 0
     t.equal(items.length, 1, "items length should = 1, as 1 item added");
@@ -272,7 +272,7 @@ test("2. New Todo, should allow user to add todo items", function(t){
 
     // subscription keyCode trigger test (!should fire signal)
     const clone = document.getElementById(id).cloneNode(true);  // create clone of DOM
-    document.dispatchEvent(new KeyboardEvent('keyup', {'keyCode': 42}));
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key': 42}));
     t.deepEqual(document.getElementById(id), clone, "#" + id + " no change");
 
     // check <input id="new-todo"> reset after new item was added
