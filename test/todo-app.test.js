@@ -294,7 +294,7 @@ test("2. New Todo, should allow user to add todo items", function(t){
 
 
 // Mark all as completed test
-test.only("3. Mark all as completed ('TOGGLE_ALL') " , function(t){
+test("3. Mark all as completed ('TOGGLE_ALL') " , function(t){
     elmish.empty(document.getElementById(id));  // ensure DOM empty
     localStorage.removeItem('elmish_' + id);
     // create test Model
@@ -346,5 +346,40 @@ test.only("3. Mark all as completed ('TOGGLE_ALL') " , function(t){
 
 
     elmish.empty(document.getElementById(id));
+    t.end();
+});
+
+// Toggle test (should pass w/o changing anything witihn 'todo-app.js')
+test.only("4. Mark individual item as complete (done=true)", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+    
+    const model = {
+        todos: [
+            {id: 0, title: "Make something people want.", done:false}
+        ],
+        hash: "#/"
+    };
+
+    elmish.mount(model, app.update, app.view, id ,app.subscriptions);
+    // ensure model was added to todo-list
+    const item = document.getElementById('0');
+
+    t.equal(item.textContent, model.todos[0].title, "Item contained in model.");
+
+    // confirm todo-item is done=false
+    t.equal(document.querySelectorAll('.toggle')[0].checked, false, 
+    "Items start as 'done=false' ");
+
+    // click checkbox to toggle done=false -> done=true
+    document.querySelectorAll('.toggle')[0].click();
+    t.equal(document.querySelectorAll('.toggle')[0].checked, true,
+    "Item should be marked as complete")
+
+    // click checkbox to toggle done=true -> done=false (undo)
+    document.querySelectorAll('.toggle')[0].click();
+    t.equal(document.querySelectorAll('.toggle')[0].checked, false,
+    "Item should be undone if done=true.")
+    
     t.end();
 });
