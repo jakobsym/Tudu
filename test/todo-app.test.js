@@ -350,7 +350,7 @@ test("3. Mark all as completed ('TOGGLE_ALL') " , function(t){
 });
 
 // Toggle test (should pass w/o changing anything witihn 'todo-app.js')
-test.only("4. Mark individual item as complete (done=true)", function(t){
+test("4. Mark individual item as complete (done=true)", function(t){
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
     
@@ -381,5 +381,36 @@ test.only("4. Mark individual item as complete (done=true)", function(t){
     t.equal(document.querySelectorAll('.toggle')[0].checked, false,
     "Item should be undone if done=true.")
     
+    t.end();
+});
+
+// DELETE an item test
+test.only("4. Option to delete a task when clicking <button class='destroy'>", function(t){
+    elmish.empty(document.getElementById(id))
+
+    localStorage.removeItem('elmish_' + id);
+    const model = {
+        todos:[
+            {id: 0, title: "Make something people want.", done: false}
+        ],
+        hash: "#/"
+    }
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+
+    t.equal(document.querySelectorAll('.destroy').length, 1, "one destroy button as 1 todoitem");
+    
+    const item = document.getElementById('0');
+    // ensure item is in DOM
+    t.equal(item.textContent, model.todos[0].title, "Item contained in DOM");
+    // Try to delete item by clicking on <button class="destroy">
+    const button = item.querySelectorAll('button.destroy')[0];
+    button.click();
+
+    // confirm <button class="destory"> no longer visible as we removed all todos
+    t.equal(document.querySelectorAll('button.destroy').length, 0, 
+    "No longer a <button class=destroy> as only todo item was deleted.");
+    // ensure todoitem was succesfully removed.
+    t.equal(document.getElementById('0'), null, "todo item succesfully removed.");
+
     t.end();
 });
