@@ -433,9 +433,7 @@ test.only("5. Option to allow user to edit todo task. -> Render an item in 'edit
     }
 
     // render 1 todo list item in 'editing mode'
-    t.equal(document.getElementById(id).appendChild(
-        app.render_item(model.todos[2], model, mock_signal)
-    ));
+    document.getElementById(id).appendChild(app.render_item(model.todos[2], model, mock_signal));
 
     // test signal is onclick attribute
     t.equal(document.querySelectorAll('.view > label')[0].onclick.toString(),
