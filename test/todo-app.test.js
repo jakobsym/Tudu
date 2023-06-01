@@ -7,6 +7,13 @@ const app = require('../lib/todo-app.js');  // functions to test
 const id = 'test-app';                      // 'test-app' as root element
 const elmish = require('../lib/elmish.js'); // import "elmish" core functions
 
+// For testing view functions that require a signal
+function mock_signal(){
+    return function inner_function(){
+        console.log("finish");
+    }
+}
+
 
 // Test Model object structure
 test('todo `model` (Object) has desired keys', function(t){
@@ -433,11 +440,11 @@ test.only("5. Option to allow user to edit todo task. -> Render an item in 'edit
     }
 
     // render 1 todo list item in 'editing mode'
-    document.getElementById(id).appendChild(app.render_item(model.todos[2], model, mock_signal));
+    document.getElementById(id).appendChild(app.render_item(model.todos[2], model, mock_signal),);
 
     // test signal is onclick attribute
     t.equal(document.querySelectorAll('.view > label')[0].onclick.toString(),
-    mock_signal.toString(), "mock_signal is onclick attribute of label");
+        mock_signal().toString(), "mock_signal is onclick attribute of label");
 
     // check if <li class="editing"> is rendered
     t.equal(document.querySelectorAll('.editing').length, 1,
