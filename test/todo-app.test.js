@@ -385,7 +385,7 @@ test("4. Mark individual item as complete (done=true)", function(t){
 });
 
 // DELETE an item test
-test.only("4. Option to delete a task when clicking <button class='destroy'>", function(t){
+test("4.1. Option to delete a task when clicking <button class='destroy'>", function(t){
     elmish.empty(document.getElementById(id))
 
     localStorage.removeItem('elmish_' + id);
@@ -411,6 +411,47 @@ test.only("4. Option to delete a task when clicking <button class='destroy'>", f
     "No longer a <button class=destroy> as only todo item was deleted.");
     // ensure todoitem was succesfully removed.
     t.equal(document.getElementById('0'), null, "todo item succesfully removed.");
+
+    t.end();
+});
+
+
+// EDIT item test
+test.only("5. Option to allow user to edit todo task. -> Render an item in 'editing mode'", function(t){
+
+    elmish.empty(document.getElementById(id))
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos:[
+            {id: 0, title: "Make something people want.", done: false},
+            {id: 1, title: "Bootstrap", done: false},
+            {id: 2, title: "Make dinner", done: false}
+        ],
+        hash: "#/",
+        editing: 2  // attempt to edit 'id:2'
+    }
+
+    // render 1 todo list item in 'editing mode'
+    t.equal(document.getElementById(id).appendChild(
+        app.render_item(model.todos[2], model, mock_signal)
+    ));
+
+    // test signal is onclick attribute
+    t.equal(document.querySelectorAll('.view > label')[0].onclick.toString(),
+    mock_signal.toString(), "mock_signal is onclick attribute of label");
+
+    // check if <li class="editing"> is rendered
+    t.equal(document.querySelectorAll('.editing').length, 1,
+    '<li class="editing"> was correctly rendered.')
+
+    // check if <input class="edit"> is rendered
+    t.equal(document.querySelectorAll('.edit').length, 1,
+    '<input class="edit"> was correctly rendered.')
+
+    // check `editing: 2` === (id: 2) todo task
+    t.equal(document.querySelectorAll('.edit')[0].value, model.todos[2].title,
+    '<input class="edit"> has value: ' + model.todos[2].title);
 
     t.end();
 });
