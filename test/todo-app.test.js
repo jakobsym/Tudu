@@ -461,7 +461,7 @@ test("5. Option to allow user to edit todo task. -> Render an item in 'editing m
     t.end();
 });
 
-test.only('5.2 Double-click an item <label> to edit it', function (t) {
+test('5.2 Double-click an item <label> to edit it', function (t) {
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
 
@@ -480,7 +480,7 @@ test.only('5.2 Double-click an item <label> to edit it', function (t) {
     // "double-click" i.e. click the <label> twice in quick succession:
     label.click();
     label.click();
-    
+
     // confirm that we are now in editing mode:
     t.equal(document.querySelectorAll('.editing').length, 1,
       "<li class='editing'> element is visible");
@@ -490,3 +490,33 @@ test.only('5.2 Double-click an item <label> to edit it', function (t) {
 
     t.end();
   });
+
+// SAVE test: [Enter] key press in edit mode triggers SAVE
+test.only("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    const updated_title = "Do things that don\'t scale!  "
+    
+    // apply updated_title
+    document.querySelectorAll('.edit')[0].value = updated_title;
+    // press [Enter]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key': 'Enter'}));
+    const label = document.querySelectorAll('.view > label')[1].textContent;
+
+    t.equal(label, updated_title.trim(), 
+    "item title updated to: " + updated_title + '(trimmed)')
+
+    t.end();
+});
