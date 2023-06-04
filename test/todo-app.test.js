@@ -492,7 +492,7 @@ test('5.2 Double-click an item <label> to edit it', function (t) {
   });
 
 // SAVE test: [Enter] key press in edit mode triggers SAVE
-test.only("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
+test("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
 
@@ -519,4 +519,22 @@ test.only("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
     "item title updated to: " + updated_title + '(trimmed)')
 
     t.end();
+});
+
+// 'CANCEL' case: user pressing [Escape] should cancel any 'editing'
+test.only("5.4 'CANCEL' should cancel edits when [Esc] pressed.", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+
+    
+
 });
