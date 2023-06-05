@@ -521,8 +521,8 @@ test("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
     t.end();
 });
 
-// 'CANCEL' case: user pressing [Escape] should cancel any 'editing'
-test.only("5.4 'CANCEL' should cancel edits when [Esc] pressed.", function(t){
+// Remove the item if an empty text string was entered
+test("5.4 'SAVE' should remove the item if an empty text string was entered", function(t){
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
 
@@ -541,12 +541,44 @@ test.only("5.4 'CANCEL' should cancel edits when [Esc] pressed.", function(t){
 
     // empty string into <input class="edit">
     document.querySelectorAll('.edit')[0].value = "";
-    // press [Esc]
-    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Escape'}));
+    // press [Enter]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Enter'}));
 
     // confirm only 1 todo item now
     t.equal(document.querySelectorAll('.view').length, 1,
     "Todo count = 1.")
 
+    t.end();
+});
+
+
+// 'CANCEL' case: user pressing [Escape] should cancel any 'editing'
+test.only("5.5, 'CANCEL' case: user pressing [Escape] should cancel any 'editing", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    
+    // Attempt to edit by passing empty string
+    document.querySelectorAll('.edit')[0].value = "Hello World";
+    // press [Escape]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Escape'}));
+
+    // check that 2 todo items still exisit
+    t.equal(document.querySelectorAll('.view').length, 2 ,"Todo items remain the same.");
+    console.log("Id:1 has title= " + model.todos[1].title);
+
+    // check that original title remains
+    t.equal(document.querySelectorAll('.view > label')[1].textContent, 
+    model.todos[1].title, "Todo id:1 has title " + model.todos[1].title);
     t.end();
 });
