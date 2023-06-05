@@ -534,7 +534,19 @@ test.only("5.4 'CANCEL' should cancel edits when [Esc] pressed.", function(t){
         hash: '#/', // the "route" to display
         editing: 1
     };
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    t.equal(document.querySelectorAll('.view').length, 2, 
+    "Todo count = 2.")
 
-    
+    // empty string into <input class="edit">
+    document.querySelectorAll('.edit')[0].value = "";
+    // press [Esc]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Escape'}));
 
+    // confirm only 1 todo item now
+    t.equal(document.querySelectorAll('.view').length, 1,
+    "Todo count = 1.")
+
+    t.end();
 });
