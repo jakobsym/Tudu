@@ -598,9 +598,11 @@ test.only("5.6 Counter Test: Display current number of todo items", function(t){
     };
     // render the view and append it to the DOM inside the `test-app` node:
     elmish.mount(model, app.update, app.view, id, app.subscriptions);
-
     // current number of todo items
     const count = parseInt(document.getElementById('count').textContent, 10);
-    console.log("count = "  + count);
+   // console.log("count = "  + count);
+   t.equal(count, model.todos.length, 
+    "Counter displaying correct number of todo items: " + count);
+
     t.end();
 });
