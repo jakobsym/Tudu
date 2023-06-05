@@ -600,15 +600,7 @@ test.only("5.6 Counter Test: Display current number of todo items", function(t){
     elmish.mount(model, app.update, app.view, id, app.subscriptions);
 
     // current number of todo items
-    const curr_items = (document.querySelectorAll('li').length);
-    console.log("current number of todo items = " + curr_items);
-
-
-    const count_two = document.getElementById('count').innerHTML
-    console.log("('count').innerHTML = "  + count_two);
-
-    const count = document.querySelectorAll('.todo-count').innerHTML;
-    console.log("querySelectorAll('.todo-count') = " + count);
-    
+    const count = parseInt(document.getElementById('count').textContent, 10);
+    console.log("count = "  + count);
     t.end();
 });
