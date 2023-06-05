@@ -647,8 +647,8 @@ test("5.7 Clear Completed test: Display # of completed items. (Hidden if none co
     t.end();
 });
 
-// Data persistence test 'proxy' test for completeness
-test.only("Data persistence test 'proxy' test for completeness", function(t){
+// Data persistence 'proxy' test for completeness
+test.only("Data persistence 'proxy' test for completeness", function(t){
     elmish.empty(document.getElementById(id));
     const model = {
       todos: [
