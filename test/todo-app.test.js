@@ -608,7 +608,7 @@ test("5.6 Counter Test: Display current number of todo items", function(t){
 });
 
 // Clear Completed test: Display # of completed items. (Hidden if none completed)
-test.only("5.7 Clear Completed test: Display # of completed items. (Hidden if none completed)", function(t){
+test("5.7 Clear Completed test: Display # of completed items. (Hidden if none completed)", function(t){
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
 
@@ -641,8 +641,28 @@ test.only("5.7 Clear Completed test: Display # of completed items. (Hidden if no
     "after clearing completed items, there is only 1 todo item in the DOM.");
 
     // no clear completed button in the DOM when there are no "done" todo items:
-    t.equal(document.querySelectorAll('.clear-completed').length, 0,
+    t.equal(document.querySelectorAll('clear-completed').length, 0,
     'no clear-completed button when there are no done items.')
 
+    t.end();
+});
+
+// Data persistence test 'proxy' test for completeness
+test.only("Data persistence test 'proxy' test for completeness", function(t){
+    elmish.empty(document.getElementById(id));
+    const model = {
+      todos: [
+        { id: 0, title: "Make something people want.", done: false }
+      ],
+      hash: '#/'
+    };
+
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    // confirm model saved in localStorage
+    t.equal(localStorage.getItem('todos-elmish_' + id),
+    JSON.stringify(model), "data persisted to localStorage.");
+
+    localStorage.removeItem('todos-elmish_' + id);
+    elmish.empty(document.getElementById(id));
     t.end();
 });
