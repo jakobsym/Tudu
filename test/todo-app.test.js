@@ -553,7 +553,7 @@ test("5.4 'SAVE' should remove the item if an empty text string was entered", fu
 
 
 // 'CANCEL' case: user pressing [Escape] should cancel any 'editing'
-test.only("5.5, 'CANCEL' case: user pressing [Escape] should cancel any 'editing", function(t){
+test("5.5, 'CANCEL' case: user pressing [Escape] should cancel any 'editing", function(t){
     elmish.empty(document.getElementById(id));
     localStorage.removeItem('elmish_' + id);
 
@@ -580,5 +580,35 @@ test.only("5.5, 'CANCEL' case: user pressing [Escape] should cancel any 'editing
     // check that original title remains
     t.equal(document.querySelectorAll('.view > label')[1].textContent, 
     model.todos[1].title, "Todo id:1 has title " + model.todos[1].title);
+    t.end();
+});
+
+// Counter Test: Display current number of todo items
+test.only("5.6 Counter Test: Display current number of todo items", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+
+    // current number of todo items
+    const curr_items = (document.querySelectorAll('li').length);
+    console.log("current number of todo items = " + curr_items);
+
+
+    const count_two = document.getElementById('count').innerHTML
+    console.log("('count').innerHTML = "  + count_two);
+
+    const count = document.querySelectorAll('.todo-count').innerHTML;
+    console.log("querySelectorAll('.todo-count') = " + count);
+    
     t.end();
 });
