@@ -424,7 +424,7 @@ test("4.1. Option to delete a task when clicking <button class='destroy'>", func
 
 
 // EDIT item test
-test.only("5. Option to allow user to edit todo task. -> Render an item in 'editing mode'", function(t){
+test("5. Option to allow user to edit todo task. -> Render an item in 'editing mode'", function(t){
 
     elmish.empty(document.getElementById(id))
     localStorage.removeItem('elmish_' + id);
@@ -458,5 +458,127 @@ test.only("5. Option to allow user to edit todo task. -> Render an item in 'edit
     t.equal(document.querySelectorAll('.edit')[0].value, model.todos[2].title,
     '<input class="edit"> has value: ' + model.todos[2].title);
 
+    t.end();
+});
+
+test('5.2 Double-click an item <label> to edit it', function (t) {
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+      todos: [
+        { id: 0, title: "Make something people want.", done: false },
+        { id: 1, title: "Let's solve our own problem", done: false }
+      ],
+      hash: '#/' // the "route" to display
+    };
+
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    const label = document.querySelectorAll('.view > label')[1]
+
+    // "double-click" i.e. click the <label> twice in quick succession:
+    label.click();
+    label.click();
+
+    // confirm that we are now in editing mode:
+    t.equal(document.querySelectorAll('.editing').length, 1,
+      "<li class='editing'> element is visible");
+
+    t.equal(document.querySelectorAll('.edit')[0].value, model.todos[1].title,
+      "<input class='edit'> has value: " + model.todos[1].title);
+
+    t.end();
+  });
+
+// SAVE test: [Enter] key press in edit mode triggers SAVE
+test("5.3 [Enter] key press in edit mode triggers SAVE", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    const updated_title = "Do things that don\'t scale!  "
+    
+    // apply updated_title
+    document.querySelectorAll('.edit')[0].value = updated_title;
+    // press [Enter]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key': 'Enter'}));
+    const label = document.querySelectorAll('.view > label')[1].textContent;
+
+    t.equal(label, updated_title.trim(), 
+    "item title updated to: " + updated_title + '(trimmed)')
+
+    t.end();
+});
+
+// Remove the item if an empty text string was entered
+test("5.4 'SAVE' should remove the item if an empty text string was entered", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    t.equal(document.querySelectorAll('.view').length, 2, 
+    "Todo count = 2.")
+
+    // empty string into <input class="edit">
+    document.querySelectorAll('.edit')[0].value = "";
+    // press [Enter]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Enter'}));
+
+    // confirm only 1 todo item now
+    t.equal(document.querySelectorAll('.view').length, 1,
+    "Todo count = 1.")
+
+    t.end();
+});
+
+
+// 'CANCEL' case: user pressing [Escape] should cancel any 'editing'
+test.only("5.5, 'CANCEL' case: user pressing [Escape] should cancel any 'editing", function(t){
+    elmish.empty(document.getElementById(id));
+    localStorage.removeItem('elmish_' + id);
+
+    const model = {
+        todos: [
+          { id: 0, title: "Make something people want.", done: false },
+          { id: 1, title: "Let's solve our own problem", done: false }
+        ],
+        hash: '#/', // the "route" to display
+        editing: 1
+    };
+    // render the view and append it to the DOM inside the `test-app` node:
+    elmish.mount(model, app.update, app.view, id, app.subscriptions);
+    
+    // Attempt to edit by passing empty string
+    document.querySelectorAll('.edit')[0].value = "Hello World";
+    // press [Escape]
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key':'Escape'}));
+
+    // check that 2 todo items still exisit
+    t.equal(document.querySelectorAll('.view').length, 2 ,"Todo items remain the same.");
+    console.log("Id:1 has title= " + model.todos[1].title);
+
+    // check that original title remains
+    t.equal(document.querySelectorAll('.view > label')[1].textContent, 
+    model.todos[1].title, "Todo id:1 has title " + model.todos[1].title);
     t.end();
 });
