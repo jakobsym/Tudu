@@ -21,7 +21,7 @@ button {
 }
 
 body {
-	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font: 14px 'Courier New', Courier, monospace;
 	line-height: 1.4em;
 	background: #f5f5f5;
 	color: #4d4d4d;
@@ -35,6 +35,10 @@ body {
 
 :focus {
 	outline: 0;
+}
+
+.title{
+	color:#351bc9
 }
 
 .hidden {
@@ -74,7 +78,7 @@ body {
 	font-size: 100px;
 	font-weight: 100;
 	text-align: center;
-	color: rgba(175, 47, 47, 0.15);
+	color: rgba(0, 0, 0, 0.263);
 	-webkit-text-rendering: optimizeLegibility;
 	-moz-text-rendering: optimizeLegibility;
 	text-rendering: optimizeLegibility;
